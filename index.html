@@ -351,6 +351,56 @@ font-family: var(--font-body);
 background-color: var(--brand-gold);
 }
 
+/* Seção FAQ / Dúvidas */
+.faq-section {
+max-width: 800px;
+margin: 4rem auto 2rem;
+padding: 0 1.5rem;
+}
+
+.faq-title {
+font-family: var(--font-title);
+font-size: 1.8rem;
+text-align: center;
+color: var(--brand-dark);
+margin-bottom: 2rem;
+font-weight: 400;
+}
+
+.faq-item {
+background-color: var(--bg-card);
+border: 1px solid var(--border-light);
+border-radius: 8px;
+margin-bottom: 1rem;
+overflow: hidden;
+}
+
+.faq-question {
+padding: 1.2rem;
+font-size: 0.95rem;
+font-weight: 500;
+color: var(--brand-dark);
+cursor: pointer;
+display: flex;
+justify-content: space-between;
+align-items: center;
+user-select: none;
+}
+
+.faq-answer {
+padding: 0 1.2rem 1.2rem;
+font-size: 0.85rem;
+color: var(--text-muted);
+display: none;
+line-height: 1.7;
+border-top: 1px solid var(--bg-neutral);
+padding-top: 1rem;
+}
+
+.faq-item.ativo .faq-answer {
+display: block;
+}
+
 /* Modal do Carrinho Lateral */
 .overlay {
 position: fixed;
@@ -717,6 +767,51 @@ max-width: 100%;
 
 </main>
 
+<!-- Seção de Dúvidas Frequentes (FAQ) -->
+<section class="faq-section">
+<h3 class="faq-title">Dúvidas Frequentes</h3>
+
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">
+<span>As peças escurecem ou causam alergia?</span>
+<span>+</span>
+</div>
+<div class="faq-answer">
+Trabalhamos com Aço Inoxidável 316L e semijoias com banho de alta qualidade 100% hipoalergênicas (livres de níquel). Nossas peças em aço inox não escurecem, não enferrujam e são à prova d'água.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">
+<span>Como funciona o frete e envio?</span>
+<span>+</span>
+</div>
+<div class="faq-answer">
+Enviamos para todo o Brasil via Correios (PAC / SEDEX) e transportadoras. O seu pedido é embalado com todo o carinho e enviado em até 24h a 48h úteis após a confirmação do pagamento.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">
+<span>Quais são as formas de pagamento?</span>
+<span>+</span>
+</div>
+<div class="faq-answer">
+Aceitamos PIX (com aprovação instantânea) e Cartão de Crédito em até 12x através do ambiente seguro do Mercado Pago. Se preferir, também pode finalizar atendimento diretamente pelo WhatsApp.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">
+<span>Qual a política de trocas e devoluções?</span>
+<span>+</span>
+</div>
+<div class="faq-answer">
+Sua satisfação é nossa prioridade! Caso precise trocar ou devolver alguma peça, você tem até 7 dias corridos após o recebimento para entrar em contato conosco pelo WhatsApp ou e-mail.
+</div>
+</div>
+</section>
+
 <!-- Carrinho Lateral -->
 <div class="overlay" id="overlay" onclick="toggleCarrinho()"></div>
 <div class="carrinho-drawer" id="carrinho-drawer">
@@ -1008,6 +1103,14 @@ overlay.classList.toggle('ativo');
 }
 }
 
+// Sanfona Dúvidas Frequentes
+function toggleFaq(el) {
+const item = el.parentElement;
+item.classList.toggle('ativo');
+const span = el.querySelector('span:last-child');
+span.innerText = item.classList.contains('ativo') ? '-' : '+';
+}
+
 // Finalização via Mercado Pago
 function finalizarMercadoPago() {
 if (carrinho.length === 0) {
@@ -1015,9 +1118,7 @@ alert("Sua sacola está vazia!");
 return;
 }
 
-// Quando criar sua conta no Mercado Pago, crie um Link de Pagamento no painel e substitua o link abaixo:
 const linkPagamentoMercadoPago = "https://mpago.la/seu-link-de-pagamento";
-
 alert("Redirecionando para o ambiente seguro do Mercado Pago para efetuar o pagamento via PIX ou Cartão...");
 window.open(linkPagamentoMercadoPago, '_blank');
 }
