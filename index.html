@@ -21,6 +21,8 @@
 --white: #FFFFFF;
 --whatsapp-color: #25D366;
 --whatsapp-hover: #1EBE5D;
+--mp-color: #009EE3;
+--mp-hover: #0081B8;
 --font-title: 'Playfair Display', serif;
 --font-body: 'Montserrat', sans-serif;
 --shadow-soft: 0 4px 20px rgba(43, 35, 31, 0.06);
@@ -523,19 +525,19 @@ border-top: 1px dashed var(--border-light);
 padding-top: 0.6rem;
 }
 
-.btn-checkout-whatsapp {
-background-color: var(--whatsapp-color);
+.btn-checkout-mp {
+background-color: var(--mp-color);
 color: var(--white);
 border: none;
 width: 100%;
-padding: 0.9rem;
+padding: 0.85rem;
 border-radius: 6px;
 font-size: 0.85rem;
 font-weight: 600;
 letter-spacing: 0.05rem;
 text-transform: uppercase;
 cursor: pointer;
-margin-top: 1rem;
+margin-top: 0.8rem;
 display: flex;
 align-items: center;
 justify-content: center;
@@ -544,8 +546,34 @@ transition: background 0.25s;
 font-family: var(--font-body);
 }
 
+.btn-checkout-mp:hover {
+background-color: var(--mp-hover);
+}
+
+.btn-checkout-whatsapp {
+background-color: transparent;
+color: var(--whatsapp-color);
+border: 1px solid var(--whatsapp-color);
+width: 100%;
+padding: 0.65rem;
+border-radius: 6px;
+font-size: 0.78rem;
+font-weight: 600;
+letter-spacing: 0.03rem;
+text-transform: uppercase;
+cursor: pointer;
+margin-top: 0.5rem;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 0.4rem;
+transition: all 0.25s;
+font-family: var(--font-body);
+}
+
 .btn-checkout-whatsapp:hover {
-background-color: var(--whatsapp-hover);
+background-color: var(--whatsapp-color);
+color: var(--white);
 }
 
 /* Rodapé Completo */
@@ -721,8 +749,12 @@ max-width: 100%;
 <span id="total-val">R$ 0,00</span>
 </div>
 
-<button class="btn-checkout-whatsapp" onclick="finalizarPedido()">
-📱 Finalizar Pedido via WhatsApp
+<button class="btn-checkout-mp" onclick="finalizarMercadoPago()">
+💳 Pagar com Cartão / PIX (Mercado Pago)
+</button>
+
+<button class="btn-checkout-whatsapp" onclick="finalizarWhatsApp()">
+📱 Finalizar / Dúvidas pelo WhatsApp
 </button>
 </div>
 </div>
@@ -734,14 +766,14 @@ max-width: 100%;
 <h4>Sobre a DAMA</h4>
 <p>Nossa missão é trazer sofisticação e auto-estima através de acessórios minimalistas de altíssima durabilidade e acabamento premium.</p>
 <div class="selos-seguranca">
-<div class="selo-box">🔒 SSL 256-bit</div>
-<div class="selo-box">🛡️ Compra Segura</div>
+<div class="selo-box">🔒 Criptografia SSL</div>
+<div class="selo-box">🛡️ Mercado Pago Seguro</div>
 </div>
 </div>
 
 <div class="footer-col">
 <h4>Atendimento</h4>
-<p>WhatsApp: (11) 99999-9999</p>
+<p>WhatsApp: (11) 95688-4571</p>
 <p>E-mail: contato@damalus.com.br</p>
 <p>São Paulo - SP | Brasil</p>
 </div>
@@ -757,7 +789,7 @@ max-width: 100%;
 
 <div class="footer-col">
 <h4>Segurança & LGPD</h4>
-<p>Seus dados pessoais (Nome, CPF e Endereço) são utilizados estritamente para o envio dos pedidos via Correios/Logística. Pagamentos processados via ambiente criptografado.</p>
+<p>Pagamentos processados em ambiente 100% protegido via Mercado Pago. Nenhum dado bancário ou de cartão é armazenado em nosso site.</p>
 </div>
 </div>
 
@@ -768,7 +800,7 @@ max-width: 100%;
 
 <!-- Lógica em JavaScript -->
 <script>
-// Produtos reais cadastrados no seu estoque DAMA
+// Produtos cadastrados
 const produtos = [
 {
 id: 1,
@@ -822,6 +854,7 @@ imagem: "https://images.unsplash.com/photo-1611591475155-4282faa7c2e7?auto=forma
 
 let carrinho = JSON.parse(localStorage.getItem('dama_carrinho')) || [];
 let freteValor = 0;
+const numWhatsApp = "5511956884571"; // Número oficial da DAMALUS
 
 // Renderizar produtos na tela
 function renderizarProdutos(lista = produtos) {
@@ -953,7 +986,7 @@ const cep = document.getElementById('cep-input').value;
 const freteRes = document.getElementById('frete-resultado');
 
 if (cep.length >= 8) {
-freteValor = 12.90; // Frete promocional fixo / simulação Melhor Envio
+freteValor = 12.90; // Frete promocional fixo
 document.getElementById('frete-val').innerText = `R$ 12,90`;
 freteRes.innerText = "🚚 Envio Expresso (3 a 5 dias úteis)";
 } else {
@@ -975,7 +1008,22 @@ overlay.classList.toggle('ativo');
 }
 }
 
-function finalizarPedido() {
+// Finalização via Mercado Pago
+function finalizarMercadoPago() {
+if (carrinho.length === 0) {
+alert("Sua sacola está vazia!");
+return;
+}
+
+// Quando criar sua conta no Mercado Pago, crie um Link de Pagamento no painel e substitua o link abaixo:
+const linkPagamentoMercadoPago = "https://mpago.la/seu-link-de-pagamento";
+
+alert("Redirecionando para o ambiente seguro do Mercado Pago para efetuar o pagamento via PIX ou Cartão...");
+window.open(linkPagamentoMercadoPago, '_blank');
+}
+
+// Finalização via WhatsApp
+function finalizarWhatsApp() {
 if (carrinho.length === 0) {
 alert("Sua sacola está vazia!");
 return;
@@ -995,9 +1043,8 @@ msg += `\n📦 *Frete Estimado:* R$ ${freteValor.toFixed(2)}`;
 
 const total = subtotal + freteValor;
 msg += `\n💰 *TOTAL DO PEDIDO:* R$ ${total.toFixed(2)}`;
-msg += "\n\nPor favor, envie as opções de PIX ou cartão para pagamento!";
+msg += "\n\nPodemos confirmar os dados para envio?";
 
-const numWhatsApp = "5511999999999"; // Digite seu número de WhatsApp com DDD aqui
 window.open(`https://wa.me/${numWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
