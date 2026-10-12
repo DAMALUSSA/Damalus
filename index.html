@@ -1076,18 +1076,49 @@ const totalGeral = subtotal + freteValor;
 totalEl.innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
 }
 
+// Cálculo de Frete Dinâmico por Região/Estado
 function calcularFrete() {
-const cep = document.getElementById('cep-input').value;
-const freteRes = document.getElementById('frete-resultado');
+  const cep = document.getElementById('cep-input').value.replace(/\D/g, '');
+  const freteRes = document.getElementById('frete-resultado');
 
-if (cep.length >= 8) {
-freteValor = 12.90; // Frete promocional fixo
-document.getElementById('frete-val').innerText = `R$ 12,90`;
-freteRes.innerText = "🚚 Envio Expresso (3 a 5 dias úteis)";
-} else {
-alert("Por favor, digite um CEP válido com 8 dígitos.");
-}
-renderizarCarrinho();
+  if (cep.length === 8) {
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.erro) {
+          alert("CEP não encontrado. Por favor, verifique os dígitos.");
+          return;
+        }
+
+        const estado = data.uf;
+        const subtotal = carrinho.reduce((acc, item) => acc + (item.preco * item.qtd), 0);
+
+        if (subtotal >= 150) {
+          freteValor = 0;
+          document.getElementById('frete-val').innerText = "R$ 0,00";
+          freteRes.innerText = `✨ Frete Grátis aplicado para ${data.localidade}/${estado}!`;
+        } else if (estado === 'SP') {
+          freteValor = 12.90;
+          document.getElementById('frete-val').innerText = "R$ 12,90";
+          freteRes.innerText = `🚚 Envio para ${data.localidade}/${estado}: R$ 12,90 (2 a 4 dias úteis)`;
+        } else if (['RJ', 'MG', 'ES', 'PR', 'SC', 'RS'].includes(estado)) {
+          freteValor = 18.90;
+          document.getElementById('frete-val').innerText = "R$ 18,90";
+          freteRes.innerText = `🚚 Envio para ${data.localidade}/${estado}: R$ 18,90 (3 a 6 dias úteis)`;
+        } else {
+          freteValor = 24.90;
+          document.getElementById('frete-val').innerText = "R$ 24,90";
+          freteRes.innerText = `🚚 Envio para ${data.localidade}/${estado}: R$ 24,90 (5 a 8 dias úteis)`;
+        }
+
+        renderizarCarrinho();
+      })
+      .catch(() => {
+        alert("Erro ao consultar o CEP. Tente novamente.");
+      });
+  } else {
+    alert("Por favor, digite um CEP válido com 8 dígitos.");
+  }
 }
 
 function toggleCarrinho(forcarAbrir = false) {
